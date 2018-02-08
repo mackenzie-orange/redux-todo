@@ -61,7 +61,7 @@ const visibilityFilter = (state = SHOW_ALL, action) => {
 };
 
 const todoApp = combineReducers({
-    todoReducer: todos,
+    todos,
     visibilityFilter,
 });
 
@@ -99,7 +99,7 @@ class TodoApp extends React.Component {
 }
 
 const render = () => {
-    ReactDOM.render(<TodoApp todos={ store.getState().todoReducer }/>, document.getElementById('root'));
+    ReactDOM.render(<TodoApp todos={ store.getState().todos }/>, document.getElementById('root'));
 };
 
 store.subscribe(render);
