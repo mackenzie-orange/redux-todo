@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import expect from 'expect';
 import _map from 'lodash.map';
-import Redux from 'redux';
+import { combineReducers, createStore} from 'redux';
 
 const ADD_TODO = 'ADD_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
@@ -61,12 +60,53 @@ const visibilityFilter = (state = SHOW_ALL, action) => {
     }
 };
 
-const { combineReducers } = Redux;
-
 const todoApp = combineReducers({
-    todos,
+    todoReducer: todos,
     visibilityFilter,
 });
+
+
+const store = createStore(todoApp);
+
+let nextTodoId = 0;
+
+class TodoApp extends React.Component {
+    render() {
+        return (
+            <div>
+                <input ref={node => {
+                this.input = node
+                }} />
+                <button onClick={() => {
+                    store.dispatch({
+                        type: ADD_TODO,
+                        text: this.input.value,
+                        id: nextTodoId++,
+                    });
+                    this.input.value = '';
+                }}>Add Todo Item
+                </button>
+                <ul>
+                    {_map(this.props.todos, (todo) =>
+                        <li key={todo.id}>
+                            {todo.text}
+                        </li>
+                    )}
+                </ul>
+            </div>
+        );
+    }
+}
+
+const render = () => {
+    ReactDOM.render(<TodoApp todos={ store.getState().todoReducer }/>, document.getElementById('root'));
+};
+
+store.subscribe(render);
+render();
+
+
+// Tests below
 
 const testTodos = () => {
     const stateBefore = [];
@@ -120,6 +160,3 @@ const testToggleTodo = () => {
 testTodos();
 
 testToggleTodo();
-
-
-ReactDOM.render(<App />, document.getElementById('root'));
