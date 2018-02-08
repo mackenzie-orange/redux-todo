@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import expect from 'expect';
 import _map from 'lodash.map';
+import Redux from 'redux';
 
 const ADD_TODO = 'ADD_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
@@ -60,12 +61,12 @@ const visibilityFilter = (state = SHOW_ALL, action) => {
     }
 };
 
-const todoApp = (state = {}, action) => {
-    return {
-        todos: todos(state.todos, action),
-        visibilityFilter: visibilityFilter(state.visibilityFilter, action),
-    };
-};
+const { combineReducers } = Redux;
+
+const todoApp = combineReducers({
+    todos,
+    visibilityFilter,
+});
 
 const testTodos = () => {
     const stateBefore = [];

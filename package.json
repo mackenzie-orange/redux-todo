@@ -6,7 +6,8 @@
     "expect": "^21.2.1",
     "lodash.map": "^4.6.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "redux": "^3.7.2"
   },
   "devDependencies": {
     "react-scripts": "1.1.0"
