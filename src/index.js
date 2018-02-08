@@ -7,6 +7,8 @@ import _map from 'lodash.map';
 
 const ADD_TODO = 'ADD_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
+const SHOW_ALL = 'SHOW_ALL';
+const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
 
 const LEARN_REDUX = 'Learn Redux';
 
@@ -47,6 +49,22 @@ const todos = (state = [], action) => {
         default:
             return state;
     }
+};
+
+const visibilityFilter = (state = SHOW_ALL, action) => {
+    switch (action.type) {
+        case SET_VISIBILITY_FILTER:
+            return action.filter;
+        default:
+            return state;
+    }
+};
+
+const todoApp = (state = {}, action) => {
+    return {
+        todos: todos(state.todos, action),
+        visibilityFilter: visibilityFilter(state.visibilityFilter, action),
+    };
 };
 
 const testTodos = () => {
