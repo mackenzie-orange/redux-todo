@@ -4,6 +4,7 @@ import './index.css';
 import expect from 'expect';
 import _map from 'lodash.map';
 import { combineReducers, createStore} from 'redux';
+import { Provider } from "react-redux";
 import TodoApp from './todo-app';
 import {ADD_TODO, GO_SHOPPING, LEARN_REDUX, SET_VISIBILITY_FILTER, SHOW_ALL, TOGGLE_TODO} from "./constants";
 import PropTypes from 'prop-types';
@@ -58,21 +59,6 @@ const todoApp = combineReducers({
     todos,
     visibilityFilter,
 });
-
-class Provider extends React.Component {
-    getChildContext() {
-        return {
-            store: this.props.store
-        };
-    }
-    render() {
-        return this.props.children;
-    }
-}
-
-Provider.childContextTypes = {
-    store: PropTypes.object
-};
 
 ReactDOM.render(
     <Provider store={createStore(todoApp)}>
