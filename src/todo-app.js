@@ -42,7 +42,9 @@ const mapStateToTodoListProps = (state) => {
 };
 
 const mapDispatchToTodoListProps = (dispatch) => ({
-    onTodoClick: (id) => dispatch(toggleTodo(id))
+    onTodoClick(id) {
+        dispatch(toggleTodo(id))
+    },
 });
 
 const VisibleTodoList = connect(
@@ -64,18 +66,15 @@ const Link = ({active, children, onClick}) => {
     }
 };
 
-const mapStateToLinkProps = (state, ownProps) => {
-    return {
-        active : ownProps.filter === state.visibilityFilter
-    };
-};
+const mapStateToLinkProps = (state, ownProps) => ({
+    active : ownProps.filter === state.visibilityFilter,
+});
 
-const mapDispatchToLinkProps = (dispatch, ownProps) => {
-    const onClick = () => dispatch(setVisibilityFilter(ownProps));
-    return {
-        onClick
-    };
-};
+const mapDispatchToLinkProps = (dispatch, ownProps) => ({
+    onClick() {
+        dispatch(setVisibilityFilter(ownProps));
+    }
+});
 
 const FilterLink = connect(mapStateToLinkProps, mapDispatchToLinkProps)(Link);
 
