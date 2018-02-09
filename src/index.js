@@ -1,15 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {combineReducers, createStore} from 'redux';
+import {createStore} from 'redux';
 import {Provider} from "react-redux";
 import TodoApp from './todo-app';
-import {todos, visibilityFilter} from "./reducers";
-
-const todoApp = combineReducers({
-    todos,
-    visibilityFilter,
-});
+import {todoApp} from "./reducers";
 
 ReactDOM.render(
     <Provider store={createStore(todoApp)}>

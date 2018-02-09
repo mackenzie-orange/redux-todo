@@ -1,6 +1,7 @@
 import {ADD_TODO, GO_SHOPPING, LEARN_REDUX, SET_VISIBILITY_FILTER, SHOW_ALL, TOGGLE_TODO} from "./constants";
 import _map from "lodash.map";
 import expect from "expect";
+import {combineReducers} from "redux";
 
 export const todo = (state, action) => {
     switch(action.type) {
@@ -47,6 +48,11 @@ export const visibilityFilter = (state = SHOW_ALL, action) => {
             return state;
     }
 };
+
+export const todoApp = combineReducers({
+    todos,
+    visibilityFilter,
+});
 
 
 // Tests below
