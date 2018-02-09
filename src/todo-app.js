@@ -3,32 +3,41 @@ import React from "react";
 import _filter from "lodash.filter";
 import PropTypes from "prop-types";
 import { TOGGLE_TODO, SET_VISIBILITY_FILTER, SHOW_COMPLETED, SHOW_ACTIVE, SHOW_ALL, ADD_TODO } from "./constants";
+import { connect } from 'react-redux';
 
-class VisibleTodoList extends React.Component {
-    componentDidMount() {
-        const { store } = this.context;
-        this.unsubscribe = store.subscribe(() => this.forceUpdate());
-    }
-
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-    render() {
-        const { store } = this.context;
-        const state = store.getState();
-        const { todos, visibilityFilter } = state;
-        const visibleTodos = getVisibleTodos(todos, visibilityFilter);
-        const onTodoClick = id => store.dispatch({
-            type: TOGGLE_TODO,
-            id
-        });
-        return <TodoList todos={visibleTodos} onTodoClick={onTodoClick} />;
-    }
-}
-
-VisibleTodoList.contextTypes = {
-    store: PropTypes.object
+const Todo = ({ onClick, completed, text }) => {
+    const style = {  textDecoration: completed ? 'line-through' : 'none' };
+    return (<li onClick={onClick} style={style}> {text} </li>)
 };
+
+const TodoList = ({ todos, onTodoClick }) => {
+    const getTodoItem = (todo) => <Todo key={todo.id} {...todo} onClick={() => onTodoClick(todo.id)}/>;
+    const todoItems = _map(todos, getTodoItem);
+    return (<ul> { todoItems } </ul>);
+};
+
+const mapStateToProps = (state) => {
+    const { todos:oldTodos, visibilityFilter } = state;
+    const todos = getVisibleTodos(oldTodos, visibilityFilter);
+    return {
+        todos
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    const onTodoClick = id => dispatch({
+        type: TOGGLE_TODO,
+        id,
+    });
+    return {
+        onTodoClick
+    };
+};
+
+const VisibleTodoList = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TodoList);
 
 let nextTodoId = 0;
 
@@ -81,17 +90,6 @@ const Footer = () => (
         <FilterLink filter={SHOW_COMPLETED} > Completed </FilterLink>
     </p>
 );
-
-const Todo = ({ onClick, completed, text }) => {
-    const style = {  textDecoration: completed ? 'line-through' : 'none' };
-    return (<li onClick={onClick} style={style}> {text} </li>)
-};
-
-const TodoList = ({ todos, onTodoClick }) => {
-    const getTodoItem = (todo) => <Todo key={todo.id} {...todo} onClick={() => onTodoClick(todo.id)}/>;
-    const todoItems = _map(todos, getTodoItem);
-    return (<ul> { todoItems } </ul>);
-};
 
 const AddTodo = (props, { store }) => {
     let input;
