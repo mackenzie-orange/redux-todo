@@ -7,7 +7,6 @@ import { combineReducers, createStore} from 'redux';
 import { Provider } from "react-redux";
 import TodoApp from './todo-app';
 import {ADD_TODO, GO_SHOPPING, LEARN_REDUX, SET_VISIBILITY_FILTER, SHOW_ALL, TOGGLE_TODO} from "./constants";
-import PropTypes from 'prop-types';
 
 const todo = (state, action) => {
     switch(action.type) {
