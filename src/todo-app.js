@@ -16,7 +16,7 @@ const TodoList = ({ todos, onTodoClick }) => {
     return (<ul> { todoItems } </ul>);
 };
 
-const mapStateToProps = (state) => {
+const mapStateToTodoListProps = (state) => {
     const { todos:oldTodos, visibilityFilter } = state;
     const todos = getVisibleTodos(oldTodos, visibilityFilter);
     return {
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToTodoListProps = (dispatch) => {
     const onTodoClick = id => dispatch({
         type: TOGGLE_TODO,
         id,
@@ -35,8 +35,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const VisibleTodoList = connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToTodoListProps,
+    mapDispatchToTodoListProps
 )(TodoList);
 
 let nextTodoId = 0;
@@ -91,13 +91,13 @@ const Footer = () => (
     </p>
 );
 
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
     let input;
     return (
         <div>
             <input ref={ node => input = node } />
             <button onClick={() => {
-                store.dispatch({
+                dispatch({
                     type: ADD_TODO,
                     id: nextTodoId++,
                     text: input.value
@@ -108,9 +108,8 @@ const AddTodo = (props, { store }) => {
     )
 };
 
-AddTodo.contextTypes = {
-    store: PropTypes.object
-};
+// no need to subscribe to the store, no arguments will not supply store and will supply the dispatch
+AddTodo = connect()(AddTodo);
 
 const getVisibleTodos = (todos, filter) => {
     switch(filter) {
