@@ -1,9 +1,26 @@
 import _map from "lodash.map";
 import React from "react";
 import _filter from "lodash.filter";
-import PropTypes from "prop-types";
 import { TOGGLE_TODO, SET_VISIBILITY_FILTER, SHOW_COMPLETED, SHOW_ACTIVE, SHOW_ALL, ADD_TODO } from "./constants";
 import { connect } from 'react-redux';
+
+// Action Creators
+let nextTodoId = 0;
+const addTodo = (text) => ({
+    type: ADD_TODO,
+    id: nextTodoId++,
+    text,
+});
+
+const setVisibilityFilter = (ownProps) => ({
+    type: SET_VISIBILITY_FILTER,
+    filter: ownProps.filter,
+});
+
+const toggleTodo = (id) => ({
+    type: TOGGLE_TODO,
+    id,
+});
 
 const Todo = ({ onClick, completed, text }) => {
     const style = {  textDecoration: completed ? 'line-through' : 'none' };
@@ -24,22 +41,15 @@ const mapStateToTodoListProps = (state) => {
     };
 };
 
-const mapDispatchToTodoListProps = (dispatch) => {
-    const onTodoClick = id => dispatch({
-        type: TOGGLE_TODO,
-        id,
-    });
-    return {
-        onTodoClick
-    };
-};
+const mapDispatchToTodoListProps = (dispatch) => ({
+    onTodoClick: (id) => dispatch(toggleTodo(id))
+});
 
 const VisibleTodoList = connect(
     mapStateToTodoListProps,
     mapDispatchToTodoListProps
 )(TodoList);
 
-let nextTodoId = 0;
 
 const Link = ({active, children, onClick}) => {
     if (active) {
@@ -61,13 +71,9 @@ const mapStateToLinkProps = (state, ownProps) => {
 };
 
 const mapDispatchToLinkProps = (dispatch, ownProps) => {
+    const onClick = () => dispatch(setVisibilityFilter(ownProps));
     return {
-        onClick: () => {
-            dispatch({
-                type: SET_VISIBILITY_FILTER,
-                filter: ownProps.filter,
-            });
-        }
+        onClick
     };
 };
 
@@ -83,17 +89,14 @@ const Footer = () => (
     </p>
 );
 
+
 let AddTodo = ({ dispatch }) => {
     let input;
     return (
         <div>
             <input ref={ node => input = node } />
             <button onClick={() => {
-                dispatch({
-                    type: ADD_TODO,
-                    id: nextTodoId++,
-                    text: input.value
-                });
+                dispatch(addTodo(input.value));
                 input.value = '';
             }}>Add Todo Item</button>
         </div>
