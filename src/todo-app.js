@@ -1,11 +1,12 @@
 import _map from "lodash.map";
 import React from "react";
 import _filter from "lodash.filter";
+import PropTypes from "prop-types";
 import { TOGGLE_TODO, SET_VISIBILITY_FILTER, SHOW_COMPLETED, SHOW_ACTIVE, SHOW_ALL, ADD_TODO } from "./constants";
 
 class VisibleTodoList extends React.Component {
     componentDidMount() {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() => this.forceUpdate());
     }
 
@@ -13,7 +14,7 @@ class VisibleTodoList extends React.Component {
         this.unsubscribe();
     }
     render() {
-        const { store } = this.props;
+        const { store } = this.context;
         const state = store.getState();
         const { todos, visibilityFilter } = state;
         const visibleTodos = getVisibleTodos(todos, visibilityFilter);
@@ -24,6 +25,10 @@ class VisibleTodoList extends React.Component {
         return <TodoList todos={visibleTodos} onTodoClick={onTodoClick} />;
     }
 }
+
+VisibleTodoList.contextTypes = {
+    store: PropTypes.object
+};
 
 let nextTodoId = 0;
 
@@ -42,7 +47,7 @@ const Link = ({active, children, onClick}) => {
 
 class FilterLink extends React.Component {
     componentDidMount() {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() => this.forceUpdate());
     }
 
@@ -51,7 +56,8 @@ class FilterLink extends React.Component {
     }
 
     render() {
-        const { store, filter, children } = this.props;
+        const { filter, children } = this.props;
+        const { store } = this.context;
         const state = store.getState();
         const active = filter === state.visibilityFilter;
         const onClick = () => store.dispatch({
@@ -62,13 +68,17 @@ class FilterLink extends React.Component {
     }
 }
 
-const Footer = ({ store }) => (
+FilterLink.contextTypes = {
+    store: PropTypes.object
+};
+
+const Footer = () => (
     <p>
         Show:
         { ' ' }
-        <FilterLink filter={SHOW_ALL} store={store}> All </FilterLink>
-        <FilterLink filter={SHOW_ACTIVE} store={store}> Active </FilterLink>
-        <FilterLink filter={SHOW_COMPLETED} store={store}> Completed </FilterLink>
+        <FilterLink filter={SHOW_ALL} > All </FilterLink>
+        <FilterLink filter={SHOW_ACTIVE} > Active </FilterLink>
+        <FilterLink filter={SHOW_COMPLETED} > Completed </FilterLink>
     </p>
 );
 
@@ -83,7 +93,7 @@ const TodoList = ({ todos, onTodoClick }) => {
     return (<ul> { todoItems } </ul>);
 };
 
-const AddTodo = ({ store }) => {
+const AddTodo = (props, { store }) => {
     let input;
     return (
         <div>
@@ -100,6 +110,10 @@ const AddTodo = ({ store }) => {
     )
 };
 
+AddTodo.contextTypes = {
+    store: PropTypes.object
+};
+
 const getVisibleTodos = (todos, filter) => {
     switch(filter) {
         case SHOW_ALL:
@@ -113,11 +127,11 @@ const getVisibleTodos = (todos, filter) => {
     }
 };
 
-const TodoApp = ({ store }) => (
+const TodoApp = () => (
     <div>
-        <AddTodo store={store}/>
-        <VisibleTodoList store={store}/>
-        <Footer store={store}/>
+        <AddTodo />
+        <VisibleTodoList />
+        <Footer />
     </div>
 );
 
