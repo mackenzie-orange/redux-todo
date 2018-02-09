@@ -1,5 +1,6 @@
-import {ADD_TODO, SET_VISIBILITY_FILTER, SHOW_ALL, TOGGLE_TODO} from "./constants";
+import {ADD_TODO, GO_SHOPPING, LEARN_REDUX, SET_VISIBILITY_FILTER, SHOW_ALL, TOGGLE_TODO} from "./constants";
 import _map from "lodash.map";
+import expect from "expect";
 
 export const todo = (state, action) => {
     switch(action.type) {
@@ -47,3 +48,58 @@ export const visibilityFilter = (state = SHOW_ALL, action) => {
     }
 };
 
+
+// Tests below
+
+const testTodos = () => {
+    const stateBefore = [];
+    const action = {
+        type: ADD_TODO,
+        id: 0,
+        text: LEARN_REDUX,
+    };
+    const stateAfter = [{
+        id: 0,
+        text: LEARN_REDUX,
+        completed: false,
+    }];
+
+    expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
+
+const testToggleTodo = () => {
+    const stateBefore = [
+        {
+            id: 0,
+            text: LEARN_REDUX,
+            completed: false,
+        },
+        {
+            id: 1,
+            text: GO_SHOPPING,
+            completed: false,
+        }
+    ];
+    const action = {
+        type: TOGGLE_TODO,
+        id: 1,
+    };
+    const stateAfter = [
+        {
+            id: 0,
+            text: LEARN_REDUX,
+            completed: false,
+        },
+        {
+            id: 1,
+            text: GO_SHOPPING,
+            completed: true,
+        }
+    ];
+
+    expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
+
+testTodos();
+
+testToggleTodo();
