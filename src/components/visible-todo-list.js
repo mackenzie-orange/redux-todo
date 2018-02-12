@@ -1,5 +1,5 @@
 import {connect} from "react-redux";
-import {TodoList} from "./todo-list";
+import TodoList from "./todo-list";
 import {toggleTodo} from "../actions";
 import {SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED} from "../constants";
 import _filter from "lodash.filter";
@@ -22,7 +22,6 @@ const VisibleTodoList = connect(
     mapStateToTodoListProps,
     mapDispatchToTodoListProps
 )(TodoList);
-
 
 const getVisibleTodos = (todos, filter) => {
     switch(filter) {
